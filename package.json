@@ -30,8 +30,5 @@
     "posthtml-include": "^1.7.4",
     "sass": "^1.32.8"
   },
-  "browserslist": "> 0.5%, last 2 versions, not dead",
-  "@vimeo/player": "^2.16.2",
-  "lodash.throttle": "^4.1.1",
-  "simplelightbox": "^2.10.2"
+  "browserslist": "> 0.5%, last 2 versions, not dead"
 }
