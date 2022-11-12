@@ -1,40 +1,36 @@
 import throttle from 'lodash.throttle';
 import '../css/common.css';
 import '../css/03-feedback.css';
-const STORAGE_FEEDBACK = 'feedback-msg';
-const STORAGE_EMAIL = 'email-msg';
+const STORAGE_KEY = 'feedback-form-state';
+const formData = {};
 const refs = {
     form: document.querySelector(".feedback-form"),
-    input: document.querySelector(".feedback-form input"),
+    input: document.querySelector("input"),
     textarea: document.querySelector(".feedback-form textarea")
 };
 function onFormSubmit(e) {
-    console.log({ email: refs.input.value, textarea: refs.textarea.value });
     e.preventDefault();
+    const objData = JSON.parse(localStorage.getItem(STORAGE_KEY));
     e.currentTarget.reset();
-    localStorage.removeItem(STORAGE_FEEDBACK);
-    localStorage.removeItem(STORAGE_EMAIL);
+    console.log(objData);
+    localStorage.removeItem(STORAGE_KEY);
 }
 function onTextareaInput(e) {
-    const message = e.target.value;
-    localStorage.setItem(STORAGE_FEEDBACK, message);
+    formData[e.target.name] = e.target.value;
+    const stringifiedData = JSON.stringify(formData);
+    localStorage.setItem(STORAGE_KEY, stringifiedData);
 }
-function onEmailInput(e) {
-    const message = e.target.value;
-    localStorage.setItem(STORAGE_EMAIL, message);
-}
-function onSavedStorage() {
-    const savedFeedback = localStorage.getItem(STORAGE_FEEDBACK);
-    const savedEmail = localStorage.getItem(STORAGE_EMAIL);
-    if (savedEmail) {
-        refs.input.value = savedEmail;
+function onSaveToStorage() {
+    const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (savedMessage === null) {
+        return;
     }
-    if (savedFeedback) {
-        refs.textarea.value = savedFeedback;
-    }
+    refs.textarea.value = savedMessage['message'] || "";
+    refs.input.value = savedMessage['email'] || "";
 }
 
+onSaveToStorage();
 refs.form.addEventListener("submit", onFormSubmit);
-refs.input.addEventListener("input", throttle(onEmailInput, 500));
-refs.textarea.addEventListener("input", throttle(onTextareaInput, 500));
-onSavedStorage();
+refs.form.addEventListener("input", throttle(onTextareaInput, 500));
+
